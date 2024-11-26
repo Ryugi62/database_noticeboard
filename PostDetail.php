@@ -44,7 +44,8 @@
                     <!-- 예제 내용입니다. 나중에 수정해야됩니다. -->
                     <h1>Welcome to My Blog</h1>
                     <p>This is an article about <strong>CKEditor</strong>.</p>
-                    <p><em>CKEditor</em> is a WYSIWYG text editor that helps you easily format and style text. It supports <u>underlined text</u>, <b>bold text</b>, and more.</p>
+                    <p><em>CKEditor</em> is a WYSIWYG text editor that helps you easily format and style text. It
+                        supports <u>underlined text</u>, <b>bold text</b>, and more.</p>
                     <p>Here is a list of features:</p>
                     <ul>
                         <li>Text Formatting</li>
@@ -64,10 +65,20 @@
             <div class="post-navigation">
                 <div class="previous-post">
                     <p>이전글</p>
-                    <p>제목</p>
-
+                    <a href="/PostDetail.php" class="navigation-post-title">
+                        <p>제목</p>
+                    </a>
+                    <p>홍길동</p>
+                    <p>2024.01.01</p>
                 </div>
-                <div class="next-post">다음글</div>
+                <div class="next-post">
+                    <p>다음글</p>
+                    <a href="/PostDetail.php" class="navigation-post-title">
+                        <p>제목</p>
+                    </a>
+                    <p>홍길동</p>
+                    <p>2024.01.01</p>
+                </div>
             </div>
         </div>
     </main>
@@ -143,14 +154,23 @@
             justify-content: center;
         }
 
-        .post-navigation {}
+        .post-navigation {
+            margin-top: 16px;
+            border-top: 1px solid black;
+        }
 
         .previous-post,
         .next-post {
-            gap: 6px;
+            gap: 16px;
             height: 40px;
             display: flex;
             align-items: center;
+            border-bottom: 1px solid #ccc;
+            padding: 5px 0;
+        }
+
+        .navigation-post-title {
+            flex: 1;
         }
     }
 </style>
