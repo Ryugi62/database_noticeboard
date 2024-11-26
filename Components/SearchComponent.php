@@ -24,19 +24,24 @@
             /* border: 1px solid red; */
         }
 
+        input {
+            height: 18px;
+            padding: 8px;
+        }
+        
         button {
+            width: 36px;
+            height: 36px;
             color: black;
-            width: 50px;
-            height: 31px;
             border: unset;
             padding: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             background-color: unset;
-            border-top: 1px solid black;
-            border-right: 1px solid black;
-            border-bottom: 1px solid black;
+            border-top: 1px solid #ccced1;
+            border-right: 1px solid #ccced1;
+            border-bottom: 1px solid #ccced1;
         }
 
         button:hover {
@@ -45,12 +50,6 @@
 
         button:active {
             background-color: #4646460a;
-        }
-
-        button:focus {
-            border-top: 1px solid black;
-            border-right: 1px solid black;
-            border-bottom: 1px solid black;
         }
     }
 </style>
