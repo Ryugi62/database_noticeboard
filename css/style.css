@@ -12,24 +12,29 @@ a {
 html,
 body {
   margin: 0;
+  height: 100%;
   padding: 0;
   outline: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 main {
+  flex: 1;
   display: flex;
   align-items: center;
   flex-direction: column;
   justify-content: center;
 }
 
-header,
-footer {
-  /* background-color: aliceblue; */
-}
-
 header {
   border-bottom: 1px solid #e5e7eb;
+}
+
+footer {
+  color: #8b8a7c;
+  height: 400px;
+  background-color: #2a2a2a;
 }
 
 .view-box {
