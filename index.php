@@ -70,6 +70,8 @@
                     </tbody>
                 </table>
             </div>
+
+            <a href="/CreatePost.php"><button class="create-post-button">글 작성</button></a>
         </div>
     </main>
 
@@ -129,6 +131,13 @@
 
         .post-title {
             text-align: left;
+        }
+
+        .create-post-button {
+            color: white;
+            display: flex;
+            margin-left: auto;
+            background-color: #2a2a2a;
         }
     }
 </style>
