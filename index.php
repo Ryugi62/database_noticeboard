@@ -96,11 +96,11 @@
         }
 
         .table-header {
+            height: 31px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 16px;
-
         }
 
         .table-title {
