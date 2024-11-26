@@ -24,8 +24,52 @@
     ?>
 
     <main>
-        <div class="view">
-            <h1>Hello Index Page</h1>
+        <div class="main-component view">
+
+            <div class="table-continaer">
+
+                <div class="table-header">
+                    <strong class="table-title">게시판 리스트</strong>
+
+                    <?php
+                    include './Components/SearchComponent.php';
+                    ?>
+                </div>
+
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th width="40" class="index">No</th>
+                            <th class="title">제목</th>
+                            <th width="150" class="user">글쓴이</th>
+                            <th width="100" class="create_date">작성시간</th>
+                            <th width="100" class="watch_count">조회수</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <?php
+                        $a = 0;
+                        while ($a <= 5) {
+                            echo '
+                        <tr>
+                            <td>1</td>
+                            <td class="post-title"><a href="/PostDetail.php">대충 제목</a></td>
+                            <td>홍길동</td>
+                            <td>2024.01.01</td>
+                            <td>100</td>
+                        </tr>
+                        ';
+
+                            $a += 1;
+                        }
+                        ?>
+                        <tr>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </main>
 
@@ -37,5 +81,56 @@
 <script>
 
 </script>
+
+<style>
+    .main-component {
+        margin: 50px 0;
+        height: 100%;
+
+        * {
+            /* border: 1px solid red; */
+        }
+
+        .table-continaer {
+            min-height: 630px;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+
+        }
+
+        .table-title {
+            font-size: 18px;
+        }
+
+        table {
+            width: 100%;
+            text-align: center;
+            border-top: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 10px 10px;
+        }
+
+        tr {
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        tbody tr:hover {
+            background-color: #4f4f4f0a;
+        }
+
+        .post-title {
+            text-align: left;
+        }
+    }
+</style>
 
 </html>

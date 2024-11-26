@@ -1,7 +1,7 @@
 <header id="header-component" class="view-box">
     <div class="header-box view">
         <a href="/" class="logo">
-            게시판
+            데이터베이스 게시판 과제
         </a>
     </div>
 </header>
