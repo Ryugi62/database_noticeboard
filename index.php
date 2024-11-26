@@ -33,7 +33,7 @@
                 ?>
             </div>
 
-            <div class="table-continaer">
+            <div class="table-container">
                 <table>
                     <thead>
                         <tr>
@@ -90,7 +90,7 @@
             /* border: 1px solid red; */
         }
 
-        .table-continaer {
+        .table-container {
             min-height: 580px;
         }
 

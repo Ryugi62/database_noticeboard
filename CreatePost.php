@@ -31,7 +31,7 @@
                 <strong class="page-title">게시판 작성페이지</strong>
             </div>
             
-            <div class="create-post-continaer">
+            <div class="create-post-container">
 
                 <div class="editor-continer">
                     <div class="post-title-continer">
@@ -78,7 +78,7 @@
             /* border: 1px solid red; */
         }
 
-        .create-post-continaer {
+        .create-post-container {
             min-height: 630px;
         }
 
