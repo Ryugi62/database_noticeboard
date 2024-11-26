@@ -32,24 +32,33 @@
             </div>
             
             <div class="create-post-container">
+                <!-- 수정된 form 태그 시작 -->
+                <form action="/api/CreatePost.php" method="post" enctype="multipart/form-data">
+                    <div class="editor-continer">
+                        <div class="post-title-continer">
+                            <span class="post-info-continer">
+                                <input type="id" name="user_id" class="post-id-input" placeholder="아이디를 입력하세요">
+                                <input type="password" name="password" class="post-password-input" placeholder="비밀번호를 입력하세요">
+                            </span>
+                            <input type="text" name="title" class="post-title-input" placeholder="제목을 입력해주세요">
+                            <p>※ 쉬운 비밀번호를 입력하면 타인의 수정, 삭제가 쉽습니다.</p>
+                            <p>※ 음란물, 차별, 비하, 혐오 및 초상권, 저작권 침해 게시물은 민, 형사상의 책임을 질 수 있습니다.</p>
+                        </div>
+                        <textarea name="content" id="editor"></textarea>
 
-                <div class="editor-continer">
-                    <div class="post-title-continer">
-                        <span class="post-info-continer">
-                            <input type="id" class="post-id-input" placeholder="아이디를 입력하세요">
-                            <input type="password" class="post-password-input" placeholder="비밀번호를 입력하세요">
-                        </span>
-                        <input type="text" class="post-title-input" placeholder="제목을 입력해주세요">
-                        <p>※ 쉬운 비밀번호를 입력하면 타인의 수정, 삭제가 쉽습니다.</p>
-                        <p>※ 음란물, 차별, 비하, 혐오 및 초상권, 저작권 침해 게시물은 민, 형사상의 책임을 질 수 있습니다.</p>
+                        <!-- 첨부파일 업로드 -->
+                        <div class="file-upload-container">
+                            <label for="attachment">첨부파일:</label>
+                            <input type="file" name="attachment" id="attachment">
+                        </div>
                     </div>
-                    <textarea name="content" id="editor"></textarea>
-                </div>
 
-                <div class="post-button-continer">
-                    <a href="/"><button class="cancle">취소</button></a>
-                    <a href="/api/CreatePost.php"><button class="submit">작성</button></a>
-                </div>
+                    <div class="post-button-continer">
+                        <a href="/"><button type="button" class="cancle">취소</button></a>
+                        <button type="submit" class="submit">작성</button>
+                    </div>
+                </form>
+                <!-- 수정된 form 태그 종료 -->
             </div>
         </div>
     </main>
@@ -67,7 +76,6 @@
             console.error(error);
         });
 </script>
-
 
 <style>
     .create-post-component {
@@ -115,7 +123,6 @@
             width: 50%;
             margin-bottom: 8px;
         }
-
 
         .post-id-input,
         .post-password-input,
@@ -170,6 +177,15 @@
             background: #2a2a2a;
             text-shadow: 0px -1px #1d2761;
             border-color: #29367c;
+        }
+
+        /* 첨부파일 업로드 추가 스타일 */
+        .file-upload-container {
+            margin-top: 16px;
+        }
+
+        .file-upload-container label {
+            margin-right: 8px;
         }
     }
 </style>

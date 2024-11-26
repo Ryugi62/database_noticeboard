@@ -47,23 +47,32 @@
 
                     <tbody>
                         <?php
-                        $a = 0;
-                        while ($a <= 5) {
-                            echo '
-                        <tr>
-                            <td>1</td>
-                            <td class="post-title"><a href="/PostDetail.php">대충 제목</a></td>
-                            <td>홍길동</td>
-                            <td>2024.01.01</td>
-                            <td>100</td>
-                        </tr>
-                        ';
+                        // 게시물 데이터 가져오기
+                        $sql = "SELECT id, title, user_id, created_at FROM posts ORDER BY created_at DESC";
+                        $result = $conn->query($sql);
 
-                            $a += 1;
+                        if ($result->num_rows > 0) {
+                            $index = 1;
+                            while ($row = $result->fetch_assoc()) {
+                                echo "
+                                <tr>
+                                    <td>{$index}</td>
+                                    <td class='post-title'><a href='/PostDetail.php?id={$row['id']}'>{$row['title']}</a></td>
+                                    <td>{$row['user_id']}</td>
+                                    <td>" . date('Y.m.d', strtotime($row['created_at'])) . "</td>
+                                    <td>0</td>
+                                </tr>
+                                ";
+                                $index++;
+                            }
+                        } else {
+                            echo "
+                            <tr>
+                                <td colspan='5'>게시물이 없습니다.</td>
+                            </tr>
+                            ";
                         }
                         ?>
-                        <tr>
-                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -135,6 +144,10 @@
             display: flex;
             margin-left: auto;
             background-color: #2a2a2a;
+            padding: 8px 16px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
         }
     }
 </style>
