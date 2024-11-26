@@ -19,7 +19,11 @@ main {
 
 header,
 footer {
-  background-color: aliceblue;
+  /* background-color: aliceblue; */
+}
+
+header {
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .view-box {

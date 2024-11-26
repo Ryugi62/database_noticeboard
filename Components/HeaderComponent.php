@@ -1,6 +1,8 @@
 <header id="header-component" class="view-box">
     <div class="header-box view">
-        <h1 class="logo"><a href="/">게시판</a></h1>
+        <a href="/" class="logo">
+            게시판
+        </a>
     </div>
 </header>
 
@@ -11,12 +13,14 @@
 <style>
     #header-component {
         * {
-            border: 1px solid red;
+            /* border: 1px solid red; */
         }
 
         .header-box {
-            height: 80px;
+            height: 60px;
             display: flex;
+            font-size: 18px;
+            font-weight: bold;
             align-items: center;
         }
 
