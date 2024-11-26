@@ -29,15 +29,46 @@
                 <strong class="page-title">게시판 상세페이지</strong>
             </div>
 
-            <div class="post-detail-continaer">
-                <h2 class="post-title">대충 제목</h2>
+            <div class="post-detail-container">
+                <div class="post-header-container">
+                    <h2 class="post-title">대충 제목</h2>
 
+                    <span>
+                        <p>홍길동</p>
+                        <p>|</p>
+                        <p>2024.01.01 12:35:35</p>
+                    </span>
+                </div>
 
+                <div class="post-detail-main-container">
+                    <!-- 예제 내용입니다. 나중에 수정해야됩니다. -->
+                    <h1>Welcome to My Blog</h1>
+                    <p>This is an article about <strong>CKEditor</strong>.</p>
+                    <p><em>CKEditor</em> is a WYSIWYG text editor that helps you easily format and style text. It supports <u>underlined text</u>, <b>bold text</b>, and more.</p>
+                    <p>Here is a list of features:</p>
+                    <ul>
+                        <li>Text Formatting</li>
+                        <li>Image Insertion</li>
+                        <li>Custom Styling</li>
+                    </ul>
+                    <p>Hope you enjoy using CKEditor!</p>
+                    <!-- 예제 내용입니다. 나중에 수정해야됩니다. -->
+                </div>
             </div>
 
+            <div class="post-detail-footer-buttons">
+                <a href="/"><button class="go-post-list-butto">글 목록</button></a>
+                <a href="/EditPost.php"><button class="go-post-edit-button">글 수정</button></a>
+            </div>
 
+            <div class="post-navigation">
+                <div class="previous-post">
+                    <p>이전글</p>
+                    <p>제목</p>
 
-            <a href="/"><button class="go-post-list-button">글 목록</button></a>
+                </div>
+                <div class="next-post">다음글</div>
+            </div>
         </div>
     </main>
 
@@ -59,13 +90,8 @@
             /* border: 1px solid red; */
         }
 
-        .post-detail-continaer {
-            min-height: 580px;
-        }
-
         .post-title {
             margin: 0;
-            padding: 16px 0;
         }
 
         .page-header {
@@ -81,35 +107,50 @@
             font-size: 18px;
         }
 
-        table {
-            width: 100%;
-            text-align: center;
-            border-top: 1px solid black;
-            border-collapse: collapse;
+        .post-detail-container {
+            min-height: 580px;
         }
 
-        th,
-        td {
-            padding: 10px 10px;
+        .post-header-container {
+            gap: 8px;
+            padding-top: 16px;
+            border-bottom: 1px solid #eee;
+
+            span {
+                gap: 8px;
+                color: gray;
+                display: flex;
+                font-size: 14px;
+            }
+
+            p {
+                margin: 8px 0;
+            }
         }
 
-        tr {
-            border-bottom: 1px solid #e5e7eb;
-        }
 
-        tbody tr:hover {
-            background-color: #4f4f4f0a;
-        }
-
-        .post-title {
-            text-align: left;
-        }
-
-        .go-post-list-button {
+        .go-post-edit-button {
             color: white;
             margin: auto;
             display: flex;
             background-color: #2a2a2a;
+        }
+
+        .post-detail-footer-buttons {
+            gap: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .post-navigation {}
+
+        .previous-post,
+        .next-post {
+            gap: 6px;
+            height: 40px;
+            display: flex;
+            align-items: center;
         }
     }
 </style>
