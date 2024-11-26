@@ -30,7 +30,7 @@ $commentShow = false;
         </div>
     </div>
 
-    <div id="comment-input" style="display: none;">
+    <div id="re-comment-input" style="display: none;">
         <?php
         // The comment input will be included only if $commentShow is true.
         include './Components/CommentInputComponent.php';
@@ -41,7 +41,7 @@ $commentShow = false;
 <script>
     // Function to toggle the visibility of the comment input form
     function toggleCommentInput() {
-        var commentInput = document.getElementById('comment-input');
+        var commentInput = document.getElementById('re-comment-input');
 
         // Toggle the display style between 'none' and 'block'
         if (commentInput.style.display === 'none' || commentInput.style.display === '') {
@@ -56,8 +56,15 @@ $commentShow = false;
     .comment,
     .re-comment {
         padding: 8px;
-        border-radius: 8px;
+    }
+
+    .comment {
         border-bottom: 1px solid #ccc;
+    }
+
+    .re-comment,
+    #re-comment-input {
+        margin-left: 30px;
     }
 
     .comment-header,
@@ -88,4 +95,6 @@ $commentShow = false;
     .comment-body {
         cursor: pointer;
     }
+
+    .
 </style>

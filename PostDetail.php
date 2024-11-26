@@ -186,59 +186,6 @@
         .navigation-post-title {
             flex: 1;
         }
-
-        .comment-component {
-            margin-top: 32px;
-        }
-
-        .comment-input-component {
-            display: flex;
-            gap: 6px;
-        }
-
-        .comment-info-input-component {
-            gap: 6px;
-            width: 150px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        textarea {
-            flex: 1;
-            height: 60px;
-        }
-
-        .comment-button {
-            color: white;
-            height: auto;
-            background-color: #2a2a2a;
-            width: 100px;
-        }
-
-        .comment {
-            padding: 8px;
-            border-radius: 8px;
-            border-bottom: 1px solid #ccc;
-        }
-
-        .comment:last-child {
-            border-bottom: 0;
-        }
-
-        .comment-header {
-            display: flex;
-            justify-content: space-between;
-            font-size: 14px;
-            color: gray;
-        }
-
-        .comment-author {
-            font-weight: bold;
-        }
-
-        .comment-body {
-            margin-top: 4px;
-        }
     }
 </style>
 
