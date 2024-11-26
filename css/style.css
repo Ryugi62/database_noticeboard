@@ -72,3 +72,13 @@ button {
   background-color: unset;
   border: 1px solid #ccced1;
 }
+
+textarea {
+  resize: none;
+  padding: 16px;
+  border-color: #ccc;
+}
+
+textarea:focus {
+  border-color: #ccc;
+}
