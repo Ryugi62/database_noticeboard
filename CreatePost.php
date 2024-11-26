@@ -26,12 +26,13 @@
     ?>
 
     <main>
-        <div class="main-component view">
+        <div class="create-post-component view">
+            <div class="page-header">
+                <strong class="page-title">게시판 작성페이지</strong>
+            </div>
+            
+            <div class="create-post-continaer">
 
-            <div class="table-continaer">
-                <div class="table-header">
-                    <strong class="page-title">게시판 작성페이지</strong>
-                </div>
                 <div class="editor-continer">
                     <div class="post-title-continer">
                         <span class="post-info-continer">
@@ -44,6 +45,7 @@
                     </div>
                     <textarea name="content" id="editor"></textarea>
                 </div>
+
                 <div class="post-button-continer">
                     <button class="cancle">취소</button>
                     <button class="submit">작성</button>
@@ -68,7 +70,7 @@
 
 
 <style>
-    .main-component {
+    .create-post-component {
         margin: 50px 0;
         height: 100%;
 
@@ -76,11 +78,11 @@
             /* border: 1px solid red; */
         }
 
-        .table-continaer {
+        .create-post-continaer {
             min-height: 630px;
         }
 
-        .table-header {
+        .page-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
