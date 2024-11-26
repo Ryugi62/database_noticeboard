@@ -25,18 +25,15 @@
 
     <main>
         <div class="main-component view">
+            <div class="page-header">
+                <strong class="page-title">게시판 리스트</strong>
+
+                <?php
+                include './Components/SearchComponent.php';
+                ?>
+            </div>
 
             <div class="table-continaer">
-
-                <div class="table-header">
-                    <strong class="table-title">게시판 리스트</strong>
-
-                    <?php
-                    include './Components/SearchComponent.php';
-                    ?>
-                </div>
-
-
                 <table>
                     <thead>
                         <tr>
@@ -94,10 +91,10 @@
         }
 
         .table-continaer {
-            min-height: 630px;
+            min-height: 580px;
         }
 
-        .table-header {
+        .page-header {
             height: 31px;
             display: flex;
             justify-content: space-between;
@@ -105,7 +102,7 @@
             margin-bottom: 16px;
         }
 
-        .table-title {
+        .page-title {
             font-size: 18px;
         }
 
