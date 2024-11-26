@@ -47,8 +47,8 @@
                 </div>
 
                 <div class="post-button-continer">
-                    <button class="cancle">취소</button>
-                    <button class="submit">작성</button>
+                    <a href="/"><button class="cancle">취소</button></a>
+                    <a href="/api/CreatePost.php"><button class="submit">작성</button></a>
                 </div>
             </div>
         </div>
