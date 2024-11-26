@@ -86,56 +86,15 @@
 
                 <hr>
 
-                <div class="comment">
-                    <div class="comment-header">
-                        <span class="comment-author">김철수</span>
-                        <span class="comment-date">2024.01.02 08:15:10</span>
-                    </div>
-                    <div class="comment-body">
-                        <p>이 글 정말 유용합니다! CKEditor 사용법을 더 자세히 설명해주셔서 감사합니다.</p>
-                    </div>
-                </div>
-
-                <div class="comment">
-                    <div class="comment-header">
-                        <span class="comment-author">이영희</span>
-                        <span class="comment-date">2024.01.02 09:30:45</span>
-                    </div>
-                    <div class="comment-body">
-                        <p>저도 CKEditor를 사용해봤는데, 정말 유용하더군요. 좋은 정보 감사합니다!</p>
-                    </div>
-                </div>
-
-                <div class="comment">
-                    <div class="comment-header">
-                        <span class="comment-author">박수진</span>
-                        <span class="comment-date">2024.01.02 10:45:20</span>
-                    </div>
-                    <div class="comment-body">
-                        <p>이 글을 보고 CKEditor를 설치하고 사용해봤는데 너무 편리하네요! 추천해주셔서 감사합니다.</p>
-                    </div>
-                </div>
-
-                <div class="comment">
-                    <div class="comment-header">
-                        <span class="comment-author">백승한</span>
-                        <span class="comment-date">2024.01.02 10:45:20</span>
-                    </div>
-                    <div class="comment-body">
-                        <p>코리안 섹시 보이</p>
-                    </div>
-                </div>
+                <?php
+                include './Components/CommentComponent.php';
+                ?>
 
                 <hr>
 
-                <div class="comment-input-component">
-                    <div class="comment-info-input-component">
-                        <input type="text" class="comment-id" placeholder="아이디 입력하세요">
-                        <input type="password" name="" id="" class="comment-password" placeholder="비밀번호 입력하세요">
-                    </div>
-                    <textarea rows="4" cols="50" placeholder="댓글 내용을 작성하세요"></textarea>
-                    <button class="comment-button">등록</button>
-                </div>
+                <?php
+                include './Components/CommentInputComponent.php';
+                ?>
             </div>
     </main>
 
@@ -239,7 +198,7 @@
 
         .comment-info-input-component {
             gap: 6px;
-            width: 120px;
+            width: 150px;
             display: flex;
             flex-direction: column;
         }
