@@ -1,9 +1,102 @@
+<?php
+require_once './config/database.php'; // 데이터베이스 연결
+
+// 게시물 ID 가져오기
+$post_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+// 게시물 데이터 가져오기
+$post_query = "SELECT id, title, content, user_id, created_at FROM posts WHERE id = ?";
+$stmt = $conn->prepare($post_query);
+$stmt->bind_param("i", $post_id);
+$stmt->execute();
+$stmt->bind_result($id, $title, $content, $user_id, $created_at);
+
+if (!$stmt->fetch()) {
+    die("게시물이 존재하지 않습니다.");
+}
+$stmt->close();
+
+// 댓글 데이터 가져오기
+$comments_query = "
+    SELECT id, post_id, user_id, content, parent_comment_id, created_at 
+    FROM comments
+    WHERE post_id = ?
+    ORDER BY created_at ASC
+";
+$stmt = $conn->prepare($comments_query);
+$stmt->bind_param("i", $post_id);
+$stmt->execute();
+
+// 결과 바인딩
+$stmt->bind_result($comment_id, $comment_post_id, $comment_user_id, $comment_content, $comment_parent_id, $comment_created_at);
+
+// 댓글 데이터를 배열로 저장
+$comments = array();
+while ($stmt->fetch()) {
+    $comments[] = array(
+        'id' => $comment_id,
+        'post_id' => $comment_post_id,
+        'user_id' => $comment_user_id,
+        'content' => $comment_content,
+        'parent_comment_id' => $comment_parent_id,
+        'created_at' => $comment_created_at
+    );
+}
+$stmt->close();
+
+// 비교 함수 정의 (익명 함수 대신 사용)
+function compareComments($a, $b)
+{
+    return strtotime($a['created_at']) - strtotime($b['created_at']);
+}
+
+function sortComments(&$comments)
+{
+    usort($comments, 'compareComments');
+
+    foreach ($comments as &$comment) {
+        if (!empty($comment['children'])) {
+            sortComments($comment['children']);
+        }
+    }
+}
+
+function buildCommentTree($comments)
+{
+    $commentById = array();
+    $rootComments = array();
+
+    // 댓글을 ID를 키로 하는 배열로 변환
+    foreach ($comments as $comment) {
+        $comment['children'] = array();
+        $commentById[$comment['id']] = $comment;
+    }
+
+    // 부모 댓글에 대댓글을 추가
+    foreach ($commentById as $commentId => $comment) {
+        if ($comment['parent_comment_id']) {
+            $parentId = $comment['parent_comment_id'];
+            if (isset($commentById[$parentId])) {
+                $commentById[$parentId]['children'][] = &$commentById[$commentId];
+            }
+        } else {
+            $rootComments[] = &$commentById[$commentId];
+        }
+    }
+
+    // 루트 댓글과 그 하위 댓글들을 정렬
+    sortComments($rootComments);
+
+    return $rootComments;
+}
+
+$commentTree = buildCommentTree($comments);
+?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DB 게시판 과제</title>
 
     <link rel="stylesheet" href="css/style.css">
@@ -11,181 +104,73 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
-
-    <?php
-    require_once './config/database.php';
-    ?>
 </head>
 
 <body>
-
-    <?php
-    include './Components/HeaderComponent.php';
-    ?>
+    <?php include './Components/HeaderComponent.php'; ?>
 
     <main>
         <div class="main-component view">
-            <div class="page-header">
-                <strong class="page-title">게시판 상세페이지</strong>
-            </div>
+            <!-- 게시물 상세 내용 -->
+            <?php include './Components/PostDetailComponent.php'; ?>
 
-            <div class="post-detail-container">
-                <div class="post-header-container">
-                    <h2 class="post-title">대충 제목</h2>
-
-                    <span>
-                        <p>홍길동</p>
-                        <p>|</p>
-                        <p>2024.01.01 12:35:35</p>
-                    </span>
-                </div>
-
-                <div class="post-detail-main-container">
-                    <!-- 예제 내용입니다. 나중에 수정해야됩니다. -->
-                    <h1>Welcome to My Blog</h1>
-                    <p>This is an article about <strong>CKEditor</strong>.</p>
-                    <p><em>CKEditor</em> is a WYSIWYG text editor that helps you easily format and style text. It
-                        supports <u>underlined text</u>, <b>bold text</b>, and more.</p>
-                    <p>Here is a list of features:</p>
-                    <ul>
-                        <li>Text Formatting</li>
-                        <li>Image Insertion</li>
-                        <li>Custom Styling</li>
-                    </ul>
-                    <p>Hope you enjoy using CKEditor!</p>
-                    <!-- 예제 내용입니다. 나중에 수정해야됩니다. -->
-                </div>
-            </div>
-
-            <div class="post-detail-footer-buttons">
-                <a href="/"><button class="go-post-list-butto">글 목록</button></a>
-                <a href="/EditPost.php"><button class="go-post-edit-button">글 수정</button></a>
-            </div>
-
-            <div class="post-navigation">
-                <div class="previous-post">
-                    <p>이전글</p>
-                    <a href="/PostDetail.php" class="navigation-post-title">
-                        <p>제목</p>
-                    </a>
-                    <p>홍길동</p>
-                    <p>2024.01.01</p>
-                </div>
-                <div class="next-post">
-                    <p>다음글</p>
-                    <a href="/PostDetail.php" class="navigation-post-title">
-                        <p>제목</p>
-                    </a>
-                    <p>홍길동</p>
-                    <p>2024.01.01</p>
-                </div>
-            </div>
-
-            <div class="comment-component">
-                <h3>댓글</h3>
-
-                <hr>
-
-                <?php
-                include './Components/CommentComponent.php';
-                ?>
-
-                <hr>
-
-                <?php
-                include './Components/CommentInputComponent.php';
-                ?>
-            </div>
+            <!-- 댓글 컴포넌트 -->
+            <?php include './Components/CommentComponent.php'; ?>
+        </div>
     </main>
 
-    <?php
-    include './Components/FooterComponent.php';
-    ?>
+    <?php include './Components/FooterComponent.php'; ?>
 </body>
 
-<script>
-
-</script>
-
+<!-- 스타일을 직접 적용 -->
 <style>
+    /* 공통 스타일 */
     .main-component {
         margin: 50px 0;
         height: 100%;
+    }
 
-        * {
-            /* border: 1px solid red; */
-        }
+    .page-header {
+        height: 31px;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid black;
+        padding-bottom: 16px;
+        justify-content: space-between;
+    }
 
-        .post-title {
-            margin: 0;
-        }
+    .page-title {
+        font-size: 18px;
+    }
 
-        .page-header {
-            height: 31px;
-            display: flex;
-            align-items: center;
-            border-bottom: 1px solid black;
-            padding-bottom: 16px;
-            justify-content: space-between;
-        }
+    .post-detail-container {
+        display: flex;
+        min-height: 580px;
+        flex-direction: column;
+    }
 
-        .page-title {
-            font-size: 18px;
-        }
+    .post-header-container {
+        gap: 8px;
+        padding-top: 16px;
+        border-bottom: 1px solid #eee;
+    }
 
-        .post-detail-container {
-            min-height: 580px;
-        }
+    .post-header-container span {
+        gap: 8px;
+        color: gray;
+        display: flex;
+        font-size: 14px;
+    }
 
-        .post-header-container {
-            gap: 8px;
-            padding-top: 16px;
-            border-bottom: 1px solid #eee;
+    .post-header-container p {
+        margin: 8px 0;
+    }
 
-            span {
-                gap: 8px;
-                color: gray;
-                display: flex;
-                font-size: 14px;
-            }
-
-            p {
-                margin: 8px 0;
-            }
-        }
-
-        .go-post-edit-button {
-            color: white;
-            margin: auto;
-            display: flex;
-            background-color: #2a2a2a;
-        }
-
-        .post-detail-footer-buttons {
-            gap: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .post-navigation {
-            margin-top: 16px;
-            border-top: 1px solid black;
-        }
-
-        .previous-post,
-        .next-post {
-            gap: 16px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            border-bottom: 1px solid #ccc;
-            padding: 5px 0;
-        }
-
-        .navigation-post-title {
-            flex: 1;
-        }
+    .post-detail-footer-buttons {
+        gap: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 </style>
 
