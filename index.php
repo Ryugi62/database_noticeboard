@@ -12,6 +12,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css"
+        integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <?php
     require_once './config/database.php'; // 데이터베이스 연결
     ?>
@@ -97,7 +101,7 @@
                                 $attachment_check->execute();
                                 $attachment_result = $attachment_check->get_result();
                                 $attachment_row = $attachment_result->fetch_assoc();
-                                $attachment_text = $attachment_row['count'] > 0 ? " [첨부파일]" : '';
+                                $attachment_text = $attachment_row['count'] > 0 ? " <i class='fa-solid fa-paperclip'></i>" : '';
 
                                 // 댓글 개수 확인
                                 $comment_count_query = $conn->prepare("SELECT COUNT(*) as comment_count FROM comments WHERE post_id = ?");
@@ -280,6 +284,10 @@
     .pagination a.disabled {
         cursor: not-allowed;
         color: #ccc;
+    }
+
+    .highlight {
+        background-color: yellow
     }
 </style>
 

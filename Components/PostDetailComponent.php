@@ -111,9 +111,9 @@ $content = $post['content'];
 
     <!-- 첨부파일 리스트 -->
     <div class="attachments-container">
-        <h3>첨부파일:</h3>
         <?php if (count($attachments) > 0): ?>
             <ul>
+                <strong>첨부파일: </strong>
                 <?php foreach ($attachments as $file): ?>
                     <li>
                         <a href="<?= htmlspecialchars($file); ?>" class="attachment-link" download>
@@ -123,13 +123,23 @@ $content = $post['content'];
                 <?php endforeach; ?>
             </ul>
         <?php else: ?>
+            <strong>첨부파일: </strong>
             <p>첨부파일이 없습니다.</p>
         <?php endif; ?>
     </div>
 
     <div class="post-detail-footer-buttons">
-        <a href="/"><button class="go-post-list-button">글 목록</button></a>
-        <a href="/EditPost.php?id=<?= $post_id; ?>"><button class="go-post-edit-button">글 수정</button></a>
+        <a href="/" class="go-post-list-button">
+            <button>글 </button>
+        </a>
+        <a href="/EditPost.php?id=<?= $post_id; ?>" class="go-post-edit-button">
+            <button>글 수정</button>
+        </a>
+
+        <!-- 게시물 삭제 버튼 -->
+        <button class="go-post-delete-button" onclick="confirmDelete(<?= $post_id; ?>)">
+            게시물 삭제
+        </button>
     </div>
 
     <div class="post-navigation">
@@ -159,17 +169,50 @@ $content = $post['content'];
         </div>
     </div>
 
-    <!-- 스타일을 직접 적용 -->
+    <script>
+        function confirmDelete(postId) {
+            // 비밀번호 입력 받기
+            const password = prompt("게시물 삭제를 위해 비밀번호를 입력하세요.");
+
+            if (password) {
+                // 비밀번호가 입력된 경우 AJAX를 통해 서버로 삭제 요청
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", "/api/DeletePost.php", true);
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        const response = xhr.responseText;
+
+                        // 서버에서 반환된 메시지에 따라 알림
+                        if (response === "success") {
+                            alert("게시물이 삭제되었습니다.");
+                            window.location.href = "/"; // 삭제 후 목록 페이지로 리디렉션
+                        } else {
+                            alert(response); // 비밀번호 불일치 시 경고
+                        }
+                    }
+                };
+                xhr.send("id=" + postId + "&password=" + encodeURIComponent(password));
+            } else {
+                alert("비밀번호를 입력해야 합니다.");
+            }
+        }
+    </script>
+
     <style>
         .post-title {
             margin: 0;
         }
 
-        .go-post-edit-button {
+        .go-post-edit-button button {
             color: white;
-            margin: auto;
             display: flex;
             background-color: #2a2a2a;
+        }
+
+        .go-post-delete-button {
+            color: white;
+            background-color: red;
         }
 
         .post-navigation {
@@ -209,8 +252,14 @@ $content = $post['content'];
         }
 
         .attachments-container ul {
+            border-top: 1px solid #ccc;
+            gap: 6px;
+            padding-top: 20px;
             padding: 0;
+            display: flex;
             list-style-type: none;
+            flex-direction: row;
+            align-items: center;
         }
 
         .attachments-container li {

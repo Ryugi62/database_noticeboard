@@ -164,7 +164,6 @@
     }
 
     .cancle {
-        background: #999;
         text-shadow: 0px -1px #474747;
         border-color: #797979;
     }

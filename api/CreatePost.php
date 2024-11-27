@@ -27,9 +27,10 @@ if (!mb_check_encoding($content, 'UTF-8')) {
 }
 
 // 데이터베이스에 게시물 저장
+$hashed_password = password_hash($password, PASSWORD_DEFAULT);
 $sql = "INSERT INTO posts (user_id, password, title, content) VALUES (?, ?, ?, ?)";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("ssss", $user_id, $password, $title, $content);
+$stmt->bind_param("ssss", $user_id, $hashed_password, $title, $content);
 $stmt->execute();
 
 // 게시물이 저장된 후 post_id 가져오기
