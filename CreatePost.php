@@ -37,7 +37,7 @@
                     <div class="editor-continer">
                         <div class="post-title-continer">
                             <span class="post-info-continer">
-                                <input type="id" name="user_id" class="post-id-input" placeholder="아이디를 입력하세요">
+                                <input type="text" name="user_id" class="post-id-input" placeholder="아이디를 입력하세요">
                                 <input type="password" name="password" class="post-password-input"
                                     placeholder="비밀번호를 입력하세요">
                             </span>
@@ -94,112 +94,95 @@
     .create-post-component {
         margin: 50px 0;
         height: 100%;
+    }
 
-        * {
-            /* border: 1px solid red; */
-        }
+    .create-post-container {
+        min-height: 630px;
+    }
 
-        .create-post-container {
-            min-height: 630px;
-        }
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+        height: 31px;
+    }
 
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            height: 31px;
-        }
+    .page-title {
+        font-size: 18px;
+    }
 
-        .page-title {
-            font-size: 18px;
-        }
+    .editor-continer {
+        padding: 16px 0;
+        border-top: 1px solid black;
+    }
 
-        .editor-continer {
-            padding: 16px 0;
-            border-top: 1px solid black;
-        }
+    .post-title-continer {
+        margin-bottom: 16px;
+    }
 
-        .post-title-continer {
-            margin-bottom: 16px;
+    .post-info-continer {
+        gap: 8px;
+        display: flex;
+        width: 50%;
+        margin-bottom: 8px;
+    }
 
-            p {
-                color: gray;
-                font-size: 14px;
-                margin: 4px 0;
-            }
-        }
+    .post-id-input,
+    .post-password-input,
+    .post-title-input {
+        flex: 1;
+        border: 1px solid #ccced1;
+        display: flex;
+        padding: 8px 16px;
+        font-weight: bold;
+    }
 
-        .post-info-continer {
-            gap: 8px;
-            display: flex;
-            width: 50%;
-            margin-bottom: 8px;
-        }
+    .post-title-input {
+        flex: 1;
+        width: 80%;
+        height: 36px;
+        border: 1px solid #ccced1;
+        font-size: 18px;
+        font-weight: bold;
+    }
 
-        .post-id-input,
-        .post-password-input,
-        .post-title-input {
-            flex: 1;
-            border: 1px solid #ccced1;
-            display: flex;
-            padding: 8px 16px;
-            font-weight: bold;
-        }
+    .ck-editor {
+        margin-top: 24px;
+    }
 
-        .post-title-input {
-            flex: 1;
-            width: 80%;
-            height: 36px;
-            border: 1px solid #ccced1;
-            font-size: 18px;
-            font-weight: bold;
-        }
+    .ck-editor__editable_inline {
+        height: 450px;
+        padding: 8px 16px;
+    }
 
-        .ck-editor {
-            margin-top: 24px;
-        }
+    .post-button-continer {
+        gap: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: right;
+    }
 
-        .ck-editor__editable_inline {
-            height: 450px;
-            padding: 8px 16px;
-        }
+    .cancle {
+        background: #999;
+        text-shadow: 0px -1px #474747;
+        border-color: #797979;
+    }
 
-        .post-button-continer {
-            gap: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: right;
+    .submit {
+        color: white;
+        background: #2a2a2a;
+        text-shadow: 0px -1px #1d2761;
+        border-color: #29367c;
+    }
 
-            button {
-                width: 80px;
-                color: #fff;
-                height: 40px;
-                cursor: pointer;
-                border: 1px solid;
-            }
-        }
+    /* 첨부파일 업로드 추가 스타일 */
+    .file-upload-container {
+        margin-top: 16px;
+    }
 
-        .cancle {
-            background: #999;
-            text-shadow: 0px -1px #474747;
-            border-color: #797979;
-        }
-
-        .submit {
-            background: #2a2a2a;
-            text-shadow: 0px -1px #1d2761;
-            border-color: #29367c;
-        }
-
-        /* 첨부파일 업로드 추가 스타일 */
-        .file-upload-container {
-            margin-top: 16px;
-        }
-
-        .file-upload-container label {
-            margin-right: 8px;
-        }
+    .file-upload-container label {
+        margin-right: 8px;
     }
 </style>
 

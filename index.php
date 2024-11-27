@@ -91,15 +91,32 @@
                         if ($result->num_rows > 0) {
                             $index = $offset + 1; // 현재 페이지에서 시작 번호
                             while ($row = $result->fetch_assoc()) {
-                                // 검색어가 있으면 제목 하이라이트
+                                // 첨부파일이 있는지 확인
+                                $attachment_check = $conn->prepare("SELECT COUNT(*) as count FROM attachments WHERE post_id = ?");
+                                $attachment_check->bind_param("i", $row['id']);
+                                $attachment_check->execute();
+                                $attachment_result = $attachment_check->get_result();
+                                $attachment_row = $attachment_result->fetch_assoc();
+                                $attachment_text = $attachment_row['count'] > 0 ? " [첨부파일]" : '';
+
+                                // 댓글 개수 확인
+                                $comment_count_query = $conn->prepare("SELECT COUNT(*) as comment_count FROM comments WHERE post_id = ?");
+                                $comment_count_query->bind_param("i", $row['id']);
+                                $comment_count_query->execute();
+                                $comment_count_result = $comment_count_query->get_result();
+                                $comment_count_row = $comment_count_result->fetch_assoc();
+                                $comment_count_text = $comment_count_row['comment_count'] > 0 ? " ({$comment_count_row['comment_count']})" : '';
+
+                                // 제목 하이라이트 (검색어가 있으면)
                                 $highlighted_title = $row['title'];
                                 if ($search) {
                                     $highlighted_title = preg_replace('/(' . preg_quote($search, '/') . ')/i', '<span class="highlight">$1</span>', $row['title']);
                                 }
+
                                 echo "
                                 <tr>
                                     <td>{$index}</td>
-                                    <td class='post-title'><a href='/PostDetail.php?id={$row['id']}'>$highlighted_title</a></td>
+                                    <td class='post-title'><a href='/PostDetail.php?id={$row['id']}'>$highlighted_title $attachment_text$comment_count_text</a></td>
                                     <td>{$row['user_id']}</td>
                                     <td>" . date('Y.m.d', strtotime($row['created_at'])) . "</td>
                                     <td>{$row['view_count']}</td>
@@ -210,7 +227,7 @@
     }
 
     tbody tr:hover {
-        background-color: #4f4f4f0a;
+        background-color: #f1f5f9;
     }
 
     .post-title {
@@ -246,48 +263,23 @@
         transform: translate(-50%, 0);
     }
 
+
     .pagination a {
-        margin: 0 5px;
+        padding: 5px 10px;
+        margin: 0 3px;
         text-decoration: none;
+        border: 1px solid #ddd;
         color: #333;
-        padding: 8px 12px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        transition: background-color 0.3s, color 0.3s;
     }
 
     .pagination a.active {
+        color: white;
         background-color: #2a2a2a;
-        color: #fff;
-        border-color: #2a2a2a;
     }
 
-    .pagination a:hover {
-        background-color: #ddd;
-    }
-
-    .pagination a.first,
-    .pagination a.last {
-        font-weight: bold;
-    }
-
-    .pagination a.prev,
-    .pagination a.next {
-        font-weight: bold;
-    }
-
-    /* 비활성화된 페이지 네비게이션 버튼 */
     .pagination a.disabled {
+        cursor: not-allowed;
         color: #ccc;
-        pointer-events: none;
-        /* 클릭할 수 없게 함 */
-        background-color: #f0f0f0;
-        border-color: #ddd;
-    }
-
-    .highlight {
-        background-color: yellow;
-        font-weight: bold;
     }
 </style>
 

@@ -26,60 +26,99 @@ if ($conn->select_db($db_name) === false) {
     die("데이터베이스 선택 실패: " . $conn->error);  // select_db가 실패한 경우
 }
 
-// 필요한 테이블 확인 및 생성
-$table_check_query = "SHOW TABLES LIKE 'posts'";
-$table_result = $conn->query($table_check_query);
+// 테이블 존재 여부 및 데이터 확인 후 생성 또는 수정하는 함수
+function createOrUpdateTable($conn, $table_name, $create_query, $check_empty_query = null)
+{
+    $table_check_query = "SHOW TABLES LIKE '$table_name'";
+    $table_result = $conn->query($table_check_query);
 
-if ($table_result->num_rows === 0) {
-    // 게시물 테이블 생성
-    $table_create_query = "
-        CREATE TABLE posts (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            user_id VARCHAR(50) NOT NULL,
-            password VARCHAR(255) NOT NULL,
-            title VARCHAR(255) NOT NULL,
-            content TEXT NOT NULL,
-            attachment VARCHAR(255),
-            view_count INT DEFAULT 0,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-    ";
-    if ($conn->query($table_create_query) === TRUE) {
-        // echo "테이블 'posts'가 생성되었습니다.<br>";
+    if ($table_result->num_rows === 0) {
+        // 테이블이 존재하지 않으면 생성
+        if ($conn->query($create_query) === TRUE) {
+            // echo "테이블 '$table_name'가 생성되었습니다.<br>";
+        } else {
+            die("테이블 '$table_name' 생성 실패: " . $conn->error);
+        }
     } else {
-        die("테이블 생성 실패: " . $conn->error);
+        // 테이블이 이미 존재할 경우, 데이터가 없으면 추가하고, 데이터 타입 변경이 필요할 수 있음
+        // echo "테이블 '$table_name'은 이미 존재합니다.<br>";
+
+        // 데이터가 비어있는 경우 기본 데이터 추가
+        if ($check_empty_query) {
+            $result = $conn->query($check_empty_query);
+            if ($result && $result->num_rows === 0) {
+                // echo "테이블 '$table_name'에 데이터가 없으므로 기본 데이터를 추가합니다.<br>";
+                $conn->query($check_empty_query);  // 기본 데이터 추가
+            }
+        }
+
+        // 테이블의 데이터 타입이 다를 경우 수정
+        // 예시: 테이블에 변경된 컬럼이 있다면 ALTER TABLE로 수정할 수 있도록 추가할 수 있음
+        // 데이터 타입 변경 필요시 ALTER TABLE 쿼리를 실행
+        // 예: ALTER TABLE posts MODIFY COLUMN title VARCHAR(500) NOT NULL;
     }
-} else {
-    // echo "테이블 'posts'는 이미 존재합니다.<br>";
 }
 
-// 댓글 테이블 확인 및 생성
-$table_check_query = "SHOW TABLES LIKE 'comments'";
-$table_result = $conn->query($table_check_query);
+// 게시물 테이블 생성 쿼리
+$posts_table_create_query = "
+    CREATE TABLE posts (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id VARCHAR(50) NOT NULL,
+        password VARCHAR(255) NOT NULL,
+        title VARCHAR(255) NOT NULL,
+        content TEXT NOT NULL,
+        attachment VARCHAR(255),
+        view_count INT DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+";
 
-if ($table_result->num_rows === 0) {
-    // 댓글 테이블 생성
-    $table_create_query = "
-        CREATE TABLE comments (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            post_id INT NOT NULL,
-            user_id VARCHAR(50) NOT NULL,
-            password VARCHAR(255) NOT NULL,
-            content LONGTEXT NOT NULL,
-            parent_comment_id INT DEFAULT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
-            FOREIGN KEY (parent_comment_id) REFERENCES comments(id) ON DELETE CASCADE
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-    ";
-    if ($conn->query($table_create_query) === TRUE) {
-        // echo "테이블 'comments'가 생성되었습니다.<br>";
-    } else {
-        die("댓글 테이블 생성 실패: " . $conn->error);
-    }
-} else {
-    // echo "테이블 'comments'는 이미 존재합니다.<br>";
-}
+// 게시물 테이블에 데이터가 없으면 기본 데이터 삽입
+$posts_check_empty_query = "
+    SELECT * FROM posts LIMIT 1;
+";
+
+// 댓글 테이블 생성 쿼리
+$comments_table_create_query = "
+    CREATE TABLE comments (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        post_id INT NOT NULL,
+        user_id VARCHAR(50) NOT NULL,
+        password VARCHAR(255) NOT NULL,
+        content LONGTEXT NOT NULL,
+        parent_comment_id INT DEFAULT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+        FOREIGN KEY (parent_comment_id) REFERENCES comments(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+";
+
+// 댓글 테이블에 데이터가 없으면 기본 데이터 삽입
+$comments_check_empty_query = "
+    SELECT * FROM comments LIMIT 1;
+";
+
+// 첨부파일 테이블 생성 쿼리
+$attachments_table_create_query = "
+    CREATE TABLE attachments (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        post_id INT NOT NULL,
+        file_name VARCHAR(255) NOT NULL,
+        file_url VARCHAR(255) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+";
+
+// 첨부파일 테이블에 데이터가 없으면 기본 데이터 삽입
+$attachments_check_empty_query = "
+    SELECT * FROM attachments LIMIT 1;
+";
+
+// 테이블 생성 및 데이터 확인
+createOrUpdateTable($conn, 'posts', $posts_table_create_query, $posts_check_empty_query);
+createOrUpdateTable($conn, 'comments', $comments_table_create_query, $comments_check_empty_query);
+createOrUpdateTable($conn, 'attachments', $attachments_table_create_query, $attachments_check_empty_query);
 
 // UTF-8 설정
 $conn->set_charset("utf8mb4");

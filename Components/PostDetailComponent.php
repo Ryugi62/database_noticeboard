@@ -34,6 +34,19 @@ if ($stmt_post->fetch()) {
 }
 $stmt_post->close();
 
+// 첨부파일 가져오기
+$attachments_query = "SELECT file_url FROM attachments WHERE post_id = ?";
+$stmt_attachments = $conn->prepare($attachments_query);
+$stmt_attachments->bind_param("i", $post_id);
+$stmt_attachments->execute();
+$stmt_attachments->bind_result($file_url);
+
+$attachments = [];
+while ($stmt_attachments->fetch()) {
+    $attachments[] = $file_url;
+}
+$stmt_attachments->close();
+
 // 이전글 가져오기
 $prev_query = "SELECT id, title, user_id, created_at FROM posts WHERE id < ? ORDER BY id DESC LIMIT 1";
 $stmt_prev = $conn->prepare($prev_query);
@@ -94,6 +107,24 @@ $content = $post['content'];
 
     <div class="post-detail-main-container">
         <p><?= nl2br($content); ?></p>
+    </div>
+
+    <!-- 첨부파일 리스트 -->
+    <div class="attachments-container">
+        <h3>첨부파일:</h3>
+        <?php if (count($attachments) > 0): ?>
+            <ul>
+                <?php foreach ($attachments as $file): ?>
+                    <li>
+                        <a href="<?= htmlspecialchars($file); ?>" class="attachment-link" download>
+                            <?= htmlspecialchars(basename($file)); ?>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        <?php else: ?>
+            <p>첨부파일이 없습니다.</p>
+        <?php endif; ?>
     </div>
 
     <div class="post-detail-footer-buttons">
@@ -175,6 +206,23 @@ $content = $post['content'];
 
         .post-detail-main-container {
             flex: 1;
+        }
+
+        .attachments-container ul {
+            padding: 0;
+            list-style-type: none;
+        }
+
+        .attachments-container li {
+            margin: 5px 0;
+        }
+
+        .attachment-link {
+            color: #333
+        }
+
+        .attachment-link:hover {
+            text-decoration: underline;
         }
     </style>
 </div>
