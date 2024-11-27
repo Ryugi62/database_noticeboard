@@ -78,7 +78,7 @@
                             $sql = "SELECT id, title, user_id, created_at, view_count 
                                     FROM posts 
                                     WHERE title LIKE ? OR content LIKE ? 
-                                    ORDER BY created_at DESC 
+                                    ORDER BY id DESC 
                                     LIMIT $posts_per_page OFFSET $offset";
                             $stmt = $conn->prepare($sql);
                             $stmt->bind_param('ss', $search_like, $search_like);
@@ -87,13 +87,13 @@
                         } else {
                             $sql = "SELECT id, title, user_id, created_at, view_count 
                                     FROM posts 
-                                    ORDER BY created_at DESC 
+                                    ORDER BY id DESC 
                                     LIMIT $posts_per_page OFFSET $offset";
                             $result = $conn->query($sql);
                         }
 
                         if ($result->num_rows > 0) {
-                            $index = $offset + 1; // 현재 페이지에서 시작 번호
+                            $index = $total_posts - $offset; // 전체 게시물의 역순 번호
                             while ($row = $result->fetch_assoc()) {
                                 // 첨부파일이 있는지 확인
                                 $attachment_check = $conn->prepare("SELECT COUNT(*) as count FROM attachments WHERE post_id = ?");
@@ -126,7 +126,7 @@
                                     <td>{$row['view_count']}</td>
                                 </tr>
                                 ";
-                                $index++;
+                                $index--;
                             }
                         } else {
                             echo "
@@ -266,7 +266,6 @@
         left: 50%;
         transform: translate(-50%, 0);
     }
-
 
     .pagination a {
         padding: 5px 10px;
