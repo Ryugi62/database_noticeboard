@@ -5,6 +5,9 @@
 
 <div id="search-component">
     <form action="index.php" method="GET">
+        <select name="" id="">
+            <option value="제목 + 내용">제목 + 내용</option>
+        </select>
         <input type="text" name="search" placeholder="검색..."
             value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
         <button type="submit">
@@ -28,6 +31,10 @@
 
         * {
             /* border: 1px solid red; */
+        }
+
+        select {
+            margin-right: 4px;
         }
 
         input {
