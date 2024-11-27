@@ -86,7 +86,7 @@ $content = $post['content'];
     </div>
 
     <div class="post-detail-main-container">
-        <p><?= nl2br(htmlspecialchars($content)); ?></p>
+        <p><?= nl2br($content); ?></p>
     </div>
 
     <div class="post-detail-footer-buttons">

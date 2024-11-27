@@ -7,6 +7,11 @@ $password = $_POST['password'];
 $title = $_POST['title'];
 $content = $_POST['content'];
 
+if (empty($user_id) || empty($password) || empty($title || empty($content))) {
+    header("Location: /");
+    die("아이디, 비밀번호, 제목, 게시물 내용은 필수 입력 항목입니다.");
+}
+
 // 입력 데이터가 UTF-8로 인코딩되었는지 확인
 if (!mb_check_encoding($user_id, 'UTF-8')) {
     $user_id = mb_convert_encoding($user_id, 'UTF-8', 'auto');
@@ -43,6 +48,7 @@ $stmt->bind_param("sssss", $user_id, $password, $title, $content, $file_url);
 $stmt->execute();
 
 if ($stmt->affected_rows > 0) {
+    echo "$content";
     header("Location: /");
     exit;
 } else {

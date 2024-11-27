@@ -1,8 +1,8 @@
-<?
+<?php
 // 데이터베이스 설정
 $db_host = 'localhost'; // 데이터베이스 호스트
 $db_user = 'root';      // 데이터베이스 사용자명
-$db_pass = 'apmsetup';  // 데이터베이스 비밀번호
+$db_pass = 'dydehsqjfdl123!@#';  // 데이터베이스 비밀번호
 $db_name = 'database_report'; // 데이터베이스 이름
 
 // MySQLi 연결 (데이터베이스 없이 연결 시도)
@@ -22,7 +22,9 @@ if ($conn->query($db_create_query) === TRUE) {
 }
 
 // 생성된 데이터베이스로 연결 전환
-$conn->select_db($db_name);
+if ($conn->select_db($db_name) === false) {
+    die("데이터베이스 선택 실패: " . $conn->error);  // select_db가 실패한 경우
+}
 
 // 필요한 테이블 확인 및 생성
 $table_check_query = "SHOW TABLES LIKE 'posts'";
@@ -63,7 +65,7 @@ if ($table_result->num_rows === 0) {
             post_id INT NOT NULL,
             user_id VARCHAR(50) NOT NULL,
             password VARCHAR(255) NOT NULL,
-            content TEXT NOT NULL,
+            content LONGTEXT NOT NULL,
             parent_comment_id INT DEFAULT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
@@ -79,23 +81,8 @@ if ($table_result->num_rows === 0) {
     // echo "테이블 'comments'는 이미 존재합니다.<br>";
 }
 
-// 깨진 데이터 읽기 및 복구
-$result = $conn->query("SELECT id, content FROM posts");
-while ($row = $result->fetch_assoc()) {
-    $id = $row['id'];
-    $content = $row['content'];
-
-    // 깨진 데이터 복구
-    $fixed_content = iconv('latin1', 'utf-8', $content);
-
-    // 복구된 데이터 저장
-    $stmt = $conn->prepare("UPDATE posts SET content = ? WHERE id = ?");
-    $stmt->bind_param("si", $fixed_content, $id);
-    $stmt->execute();
-}
-
 // UTF-8 설정
-$conn->set_charset("utf8");
+$conn->set_charset("utf8mb4");
 
 // 완료 메시지
 // echo "데이터베이스 및 테이블 구성이 완료되었습니다.<br>";

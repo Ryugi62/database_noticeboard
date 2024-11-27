@@ -30,7 +30,7 @@
             <div class="page-header">
                 <strong class="page-title">게시판 작성페이지</strong>
             </div>
-            
+
             <div class="create-post-container">
                 <!-- 수정된 form 태그 시작 -->
                 <form action="/api/CreatePost.php" method="post" enctype="multipart/form-data">
@@ -38,7 +38,8 @@
                         <div class="post-title-continer">
                             <span class="post-info-continer">
                                 <input type="id" name="user_id" class="post-id-input" placeholder="아이디를 입력하세요">
-                                <input type="password" name="password" class="post-password-input" placeholder="비밀번호를 입력하세요">
+                                <input type="password" name="password" class="post-password-input"
+                                    placeholder="비밀번호를 입력하세요">
                             </span>
                             <input type="text" name="title" class="post-title-input" placeholder="제목을 입력해주세요">
                             <p>※ 쉬운 비밀번호를 입력하면 타인의 수정, 삭제가 쉽습니다.</p>
@@ -75,6 +76,18 @@
         .catch(error => {
             console.error(error);
         });
+
+    document.querySelector("form").addEventListener("submit", function (e) {
+        const userId = document.querySelector("[name='user_id']").value.trim();
+        const password = document.querySelector("[name='password']").value.trim();
+        const title = document.querySelector("[name='title']").value.trim();
+
+        // 유효성 검사
+        if (!userId || !password || !title) {
+            e.preventDefault(); // 폼 제출 중단
+            alert("아이디, 비밀번호, 제목을 모두 입력해주세요!");
+        }
+    });
 </script>
 
 <style>
