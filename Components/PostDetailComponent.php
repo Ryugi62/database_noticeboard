@@ -130,15 +130,15 @@ $content = $post['content'];
 
     <div class="post-detail-footer-buttons">
         <a href="/" class="go-post-list-button">
-            <button>글 </button>
+            <button>목록 </button>
         </a>
         <a href="/EditPost.php?id=<?= $post_id; ?>" class="go-post-edit-button">
-            <button>글 수정</button>
+            <button>수정</button>
         </a>
 
         <!-- 게시물 삭제 버튼 -->
         <button class="go-post-delete-button" onclick="confirmDelete(<?= $post_id; ?>)">
-            게시물 삭제
+            삭제
         </button>
     </div>
 
