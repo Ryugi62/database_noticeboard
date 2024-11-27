@@ -1,14 +1,16 @@
 <head>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=search" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=search" />
 </head>
 
 <div id="search-component">
-    <input type="text">
-    <button>
-        <span class="material-symbols-outlined">
-            search
-        </span>
-    </button>
+    <form action="index.php" method="GET">
+        <input type="text" name="search" placeholder="검색..."
+            value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+        <button type="submit">
+            <span class="material-symbols-outlined">search</span>
+        </button>
+    </form>
 </div>
 
 <script>
@@ -20,6 +22,10 @@
         display: flex;
         text-align: center;
 
+        form {
+            display: flex;
+        }
+
         * {
             /* border: 1px solid red; */
         }
@@ -28,7 +34,7 @@
             height: 18px;
             padding: 8px;
         }
-        
+
         button {
             width: 36px;
             height: 36px;

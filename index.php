@@ -45,32 +45,61 @@
                     </thead>
                     <tbody>
                         <?php
+                        // 검색어 처리
+                        $search = isset($_GET['search']) ? $_GET['search'] : '';
+
                         // 페이지 번호 가져오기 (기본값 1)
                         $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
                         $posts_per_page = 15; // 한 페이지에 표시할 게시물 수
                         $offset = ($page - 1) * $posts_per_page;
 
-                        // 전체 게시물 수 가져오기
-                        $total_query = "SELECT COUNT(*) as total FROM posts";
-                        $total_result = $conn->query($total_query);
+                        // 전체 게시물 수 가져오기 (검색어가 있으면 제목 또는 내용에서 검색)
+                        if ($search) {
+                            $total_query = "SELECT COUNT(*) as total FROM posts WHERE title LIKE ? OR content LIKE ?";
+                            $stmt = $conn->prepare($total_query);
+                            $search_like = "%$search%";
+                            $stmt->bind_param('ss', $search_like, $search_like);
+                            $stmt->execute();
+                            $total_result = $stmt->get_result();
+                        } else {
+                            $total_query = "SELECT COUNT(*) as total FROM posts";
+                            $total_result = $conn->query($total_query);
+                        }
                         $total_row = $total_result->fetch_assoc();
                         $total_posts = $total_row['total'];
                         $total_pages = ceil($total_posts / $posts_per_page);
 
-                        // 현재 페이지 게시물 가져오기
-                        $sql = "SELECT id, title, user_id, created_at, view_count 
-                                FROM posts 
-                                ORDER BY created_at DESC 
-                                LIMIT $posts_per_page OFFSET $offset";
-                        $result = $conn->query($sql);
+                        // 현재 페이지 게시물 가져오기 (검색어가 있으면 제목 또는 내용에서 검색)
+                        if ($search) {
+                            $sql = "SELECT id, title, user_id, created_at, view_count 
+                                    FROM posts 
+                                    WHERE title LIKE ? OR content LIKE ? 
+                                    ORDER BY created_at DESC 
+                                    LIMIT $posts_per_page OFFSET $offset";
+                            $stmt = $conn->prepare($sql);
+                            $stmt->bind_param('ss', $search_like, $search_like);
+                            $stmt->execute();
+                            $result = $stmt->get_result();
+                        } else {
+                            $sql = "SELECT id, title, user_id, created_at, view_count 
+                                    FROM posts 
+                                    ORDER BY created_at DESC 
+                                    LIMIT $posts_per_page OFFSET $offset";
+                            $result = $conn->query($sql);
+                        }
 
                         if ($result->num_rows > 0) {
                             $index = $offset + 1; // 현재 페이지에서 시작 번호
                             while ($row = $result->fetch_assoc()) {
+                                // 검색어가 있으면 제목 하이라이트
+                                $highlighted_title = $row['title'];
+                                if ($search) {
+                                    $highlighted_title = preg_replace('/(' . preg_quote($search, '/') . ')/i', '<span class="highlight">$1</span>', $row['title']);
+                                }
                                 echo "
                                 <tr>
                                     <td>{$index}</td>
-                                    <td class='post-title'><a href='/PostDetail.php?id={$row['id']}'>{$row['title']}</a></td>
+                                    <td class='post-title'><a href='/PostDetail.php?id={$row['id']}'>$highlighted_title</a></td>
                                     <td>{$row['user_id']}</td>
                                     <td>" . date('Y.m.d', strtotime($row['created_at'])) . "</td>
                                     <td>{$row['view_count']}</td>
@@ -229,6 +258,11 @@
         /* 클릭할 수 없게 함 */
         background-color: #f0f0f0;
         border-color: #ddd;
+    }
+
+    .highlight {
+        background-color: yellow;
+        font-weight: bold;
     }
 </style>
 
