@@ -119,37 +119,50 @@
                 </table>
             </div>
 
-            <!-- 페이지 네비게이션 -->
-            <div class="pagination">
-                <?php
-                // 첫 번째 페이지 링크
-                echo $page > 1 ? "<a href='?page=1' class='first'>«</a>" : "<a href='#' class='first disabled'>«</a>";
+            <div class="table-container-footer">
+                <!-- 페이지 네비게이션 -->
+                <div class="pagination">
+                    <?php
+                    // 첫 번째 페이지 링크
+                    echo $page > 1 ? "<a href='?page=1' class='first'>«</a>" : "<a href='#' class='first disabled'>«</a>";
 
-                // 이전 페이지 링크
-                echo $page > 1 ? "<a href='?page=" . ($page - 1) . "' class='prev'>‹</a>" : "<a href='#' class='prev disabled'>‹</a>";
+                    // 이전 페이지 링크
+                    echo $page > 1 ? "<a href='?page=" . ($page - 1) . "' class='prev'>‹</a>" : "<a href='#' class='prev disabled'>‹</a>";
 
-                // 페이지 번호 표시 (현재 페이지 기준)
-                $start = max(1, $page - 2); // 시작 페이지
-                $end = min($total_pages, $page + 2); // 끝 페이지
-                
-                // 페이지 번호 링크
-                for ($i = $start; $i <= $end; $i++) {
-                    if ($i == $page) {
-                        echo "<a href='?page=$i' class='active'>$i</a>"; // 현재 페이지는 active
-                    } else {
-                        echo "<a href='?page=$i'>$i</a>";
+                    // 페이지 번호 표시 (현재 페이지 기준)
+                    // 항상 5개의 페이지를 표시하기 위해서 start와 end를 계산
+                    $start = max(1, $page - 2); // 시작 페이지 (최소값 1)
+                    $end = min($total_pages, $page + 2); // 끝 페이지 (최대값 total_pages)
+                    
+                    // 5개로 맞추기 위해 총 페이지수가 5개 미만인 경우 처리
+                    if ($end - $start < 4) {
+                        if ($start == 1) {
+                            $end = min($total_pages, $start + 4); // 끝 페이지가 총 페이지 수보다 크지 않게
+                        } else {
+                            $start = max(1, $end - 4); // 시작 페이지가 1보다 작지 않게
+                        }
                     }
-                }
 
-                // 다음 페이지 링크
-                echo $page < $total_pages ? "<a href='?page=" . ($page + 1) . "' class='next'>›</a>" : "<a href='#' class='next disabled'>›</a>";
+                    // 페이지 번호 링크
+                    for ($i = $start; $i <= $end; $i++) {
+                        if ($i == $page) {
+                            echo "<a href='?page=$i' class='active'>$i</a>"; // 현재 페이지는 active
+                        } else {
+                            echo "<a href='?page=$i'>$i</a>";
+                        }
+                    }
 
-                // 마지막 페이지 링크
-                echo $page < $total_pages ? "<a href='?page=$total_pages' class='last'>»</a>" : "<a href='#' class='last disabled'>»</a>";
-                ?>
+                    // 다음 페이지 링크
+                    echo $page < $total_pages ? "<a href='?page=" . ($page + 1) . "' class='next'>›</a>" : "<a href='#' class='next disabled'>›</a>";
+
+                    // 마지막 페이지 링크
+                    echo $page < $total_pages ? "<a href='?page=$total_pages' class='last'>»</a>" : "<a href='#' class='last disabled'>»</a>";
+                    ?>
+                </div>
+
+                <a href="/CreatePost.php"><button class="create-post-button">글 작성</button></a>
             </div>
 
-            <a href="/CreatePost.php"><button class="create-post-button">글 작성</button></a>
         </div>
     </main>
 
@@ -165,7 +178,7 @@
     }
 
     .table-container {
-        min-height: 580px;
+        min-height: 705px;
     }
 
     .page-header {
@@ -215,10 +228,22 @@
         text-decoration: none;
     }
 
+    .table-container-footer {
+        display: flex;
+        padding-top: 20px;
+        border-top: 1px solid #ccc;
+        align-items: center;
+        justify-content: right;
+        position: relative;
+    }
+
     /* 페이지 네비게이션 스타일 */
     .pagination {
-        margin: 20px 0;
+        position: absolute;
         text-align: center;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, 0);
     }
 
     .pagination a {
