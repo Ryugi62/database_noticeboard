@@ -4,6 +4,13 @@ require_once 'config/database.php'; // 데이터베이스 연결
 // 현재 게시물 ID 가져오기
 $post_id = intval($_GET['id']);
 
+// 조회수 증가 처리
+$update_view_count_query = "UPDATE posts SET view_count = view_count + 1 WHERE id = ?";
+$stmt_update_view_count = $conn->prepare($update_view_count_query);
+$stmt_update_view_count->bind_param("i", $post_id);
+$stmt_update_view_count->execute();
+$stmt_update_view_count->close();
+
 // 현재 게시물 정보 가져오기
 $post_query = "SELECT id, title, user_id, password, content, created_at FROM posts WHERE id = ?";
 $stmt_post = $conn->prepare($post_query);

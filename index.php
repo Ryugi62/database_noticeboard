@@ -13,14 +13,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap" rel="stylesheet">
 
     <?php
-    require_once './config/database.php';
+    require_once './config/database.php'; // 데이터베이스 연결
     ?>
 </head>
 
 <body>
-
     <?php
-    include './Components/HeaderComponent.php';
+    include './Components/HeaderComponent.php'; // 헤더 컴포넌트 포함
     ?>
 
     <main>
@@ -29,7 +28,7 @@
                 <strong class="page-title">게시판 리스트</strong>
 
                 <?php
-                include './Components/SearchComponent.php';
+                include './Components/SearchComponent.php'; // 검색 컴포넌트 포함
                 ?>
             </div>
 
@@ -44,15 +43,29 @@
                             <th width="100" class="watch_count">조회수</th>
                         </tr>
                     </thead>
-
                     <tbody>
                         <?php
-                        // 게시물 데이터 가져오기
-                        $sql = "SELECT id, title, user_id, created_at FROM posts ORDER BY created_at DESC";
+                        // 페이지 번호 가져오기 (기본값 1)
+                        $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+                        $posts_per_page = 15; // 한 페이지에 표시할 게시물 수
+                        $offset = ($page - 1) * $posts_per_page;
+
+                        // 전체 게시물 수 가져오기
+                        $total_query = "SELECT COUNT(*) as total FROM posts";
+                        $total_result = $conn->query($total_query);
+                        $total_row = $total_result->fetch_assoc();
+                        $total_posts = $total_row['total'];
+                        $total_pages = ceil($total_posts / $posts_per_page);
+
+                        // 현재 페이지 게시물 가져오기
+                        $sql = "SELECT id, title, user_id, created_at, view_count 
+                                FROM posts 
+                                ORDER BY created_at DESC 
+                                LIMIT $posts_per_page OFFSET $offset";
                         $result = $conn->query($sql);
 
                         if ($result->num_rows > 0) {
-                            $index = 1;
+                            $index = $offset + 1; // 현재 페이지에서 시작 번호
                             while ($row = $result->fetch_assoc()) {
                                 echo "
                                 <tr>
@@ -60,7 +73,7 @@
                                     <td class='post-title'><a href='/PostDetail.php?id={$row['id']}'>{$row['title']}</a></td>
                                     <td>{$row['user_id']}</td>
                                     <td>" . date('Y.m.d', strtotime($row['created_at'])) . "</td>
-                                    <td>0</td>
+                                    <td>{$row['view_count']}</td>
                                 </tr>
                                 ";
                                 $index++;
@@ -77,78 +90,145 @@
                 </table>
             </div>
 
+            <!-- 페이지 네비게이션 -->
+            <div class="pagination">
+                <?php
+                // 첫 번째 페이지 링크
+                echo $page > 1 ? "<a href='?page=1' class='first'>«</a>" : "<a href='#' class='first disabled'>«</a>";
+
+                // 이전 페이지 링크
+                echo $page > 1 ? "<a href='?page=" . ($page - 1) . "' class='prev'>‹</a>" : "<a href='#' class='prev disabled'>‹</a>";
+
+                // 페이지 번호 표시 (현재 페이지 기준)
+                $start = max(1, $page - 2); // 시작 페이지
+                $end = min($total_pages, $page + 2); // 끝 페이지
+                
+                // 페이지 번호 링크
+                for ($i = $start; $i <= $end; $i++) {
+                    if ($i == $page) {
+                        echo "<a href='?page=$i' class='active'>$i</a>"; // 현재 페이지는 active
+                    } else {
+                        echo "<a href='?page=$i'>$i</a>";
+                    }
+                }
+
+                // 다음 페이지 링크
+                echo $page < $total_pages ? "<a href='?page=" . ($page + 1) . "' class='next'>›</a>" : "<a href='#' class='next disabled'>›</a>";
+
+                // 마지막 페이지 링크
+                echo $page < $total_pages ? "<a href='?page=$total_pages' class='last'>»</a>" : "<a href='#' class='last disabled'>»</a>";
+                ?>
+            </div>
+
             <a href="/CreatePost.php"><button class="create-post-button">글 작성</button></a>
         </div>
     </main>
 
     <?php
-    include './Components/FooterComponent.php';
+    include './Components/FooterComponent.php'; // 푸터 컴포넌트 포함
     ?>
 </body>
-
-<script>
-
-</script>
 
 <style>
     .main-component {
         margin: 50px 0;
         height: 100%;
+    }
 
-        * {
-            /* border: 1px solid red; */
-        }
+    .table-container {
+        min-height: 580px;
+    }
 
-        .table-container {
-            min-height: 580px;
-        }
+    .page-header {
+        height: 31px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
 
-        .page-header {
-            height: 31px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
+    .page-title {
+        font-size: 18px;
+    }
 
-        .page-title {
-            font-size: 18px;
-        }
+    table {
+        width: 100%;
+        text-align: center;
+        border-top: 1px solid black;
+        border-collapse: collapse;
+    }
 
-        table {
-            width: 100%;
-            text-align: center;
-            border-top: 1px solid black;
-            border-collapse: collapse;
-        }
+    th,
+    td {
+        padding: 10px 10px;
+    }
 
-        th,
-        td {
-            padding: 10px 10px;
-        }
+    tr {
+        border-bottom: 1px solid #e5e7eb;
+    }
 
-        tr {
-            border-bottom: 1px solid #e5e7eb;
-        }
+    tbody tr:hover {
+        background-color: #4f4f4f0a;
+    }
 
-        tbody tr:hover {
-            background-color: #4f4f4f0a;
-        }
+    .post-title {
+        text-align: left;
+    }
 
-        .post-title {
-            text-align: left;
-        }
+    .create-post-button {
+        color: white;
+        display: flex;
+        margin-left: auto;
+        background-color: #2a2a2a;
+        padding: 8px 16px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+    }
 
-        .create-post-button {
-            color: white;
-            display: flex;
-            margin-left: auto;
-            background-color: #2a2a2a;
-            padding: 8px 16px;
-            border: none;
-            cursor: pointer;
-            text-decoration: none;
-        }
+    /* 페이지 네비게이션 스타일 */
+    .pagination {
+        margin: 20px 0;
+        text-align: center;
+    }
+
+    .pagination a {
+        margin: 0 5px;
+        text-decoration: none;
+        color: #333;
+        padding: 8px 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .pagination a.active {
+        background-color: #2a2a2a;
+        color: #fff;
+        border-color: #2a2a2a;
+    }
+
+    .pagination a:hover {
+        background-color: #ddd;
+    }
+
+    .pagination a.first,
+    .pagination a.last {
+        font-weight: bold;
+    }
+
+    .pagination a.prev,
+    .pagination a.next {
+        font-weight: bold;
+    }
+
+    /* 비활성화된 페이지 네비게이션 버튼 */
+    .pagination a.disabled {
+        color: #ccc;
+        pointer-events: none;
+        /* 클릭할 수 없게 함 */
+        background-color: #f0f0f0;
+        border-color: #ddd;
     }
 </style>
 
